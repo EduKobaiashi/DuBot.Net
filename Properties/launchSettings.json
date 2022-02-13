@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DuBot": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
