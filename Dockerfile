@@ -5,16 +5,16 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["DuBot.csproj", "."]
-RUN dotnet restore "./DuBot.csproj"
+COPY ["DuBot.Net.csproj", "."]
+RUN dotnet restore "./DuBot.Net.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "DuBot.csproj" -c Release -o /app/build
+RUN dotnet build "DuBot.Net.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "DuBot.csproj" -c Release -o /app/publish
+RUN dotnet publish "DuBot.Net.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "DuBot.dll"]
+ENTRYPOINT ["dotnet", "DuBot.Net.dll"]
