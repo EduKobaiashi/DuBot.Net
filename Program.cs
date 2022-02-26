@@ -18,11 +18,13 @@ namespace DuBot
     class Program
     {
         public static Dictionary<string, Jogo> jogos = new Dictionary<string, Jogo>();
-        public static MongoClient client = new MongoClient(MongoClientSettings.FromConnectionString("mongodb+srv://dubot_db:jeONYV9MXgyltJ8k@cluster-dubot.xrwe4.mongodb.net/Cluster-DuBot?retryWrites=true&w=majority"));
+        public static MongoClient client = new MongoClient(MongoClientSettings.FromConnectionString(Environment.GetEnvironmentVariable("URLMONGO") ?? ""));
 
-        private static async void runLocal()
+        static async Task Main()
         {
-            var builder = new HostBuilder()
+            if (Environment.GetEnvironmentVariable("TOKEN") == null)
+            {
+                var builder = new HostBuilder()
                 .ConfigureAppConfiguration(x =>
                 {
                     var configuration = new ConfigurationBuilder()
@@ -45,7 +47,7 @@ namespace DuBot
                         AlwaysDownloadUsers = false,
                         MessageCacheSize = 200,
                     };
-                    config.Token = Environment.GetEnvironmentVariable("TOKEN") ?? context.Configuration["Token"];
+                    config.Token = context.Configuration["Token"];
                 })
                 .UseCommandService((context, config) =>
                 {
@@ -60,16 +62,15 @@ namespace DuBot
                 })
                 .UseConsoleLifetime();
 
-            var host = builder.Build();
-            using (host)
-            {
-                await host.RunAsync();
+                var host = builder.Build();
+                using (host)
+                {
+                    await host.RunAsync();
+                }
             }
-        }
-
-        private static async void runVPS()
-        {
-            var builder = new HostBuilder()
+            else
+            {
+                var builder = new HostBuilder()
                 .ConfigureAppConfiguration(x =>
                 {
                     var configuration = new ConfigurationBuilder()
@@ -106,22 +107,11 @@ namespace DuBot
                 })
                 .UseConsoleLifetime();
 
-            var host = builder.Build();
-            using (host)
-            {
-                await host.RunAsync();
-            }
-        }
-
-        static void Main()
-        {
-            if (Environment.GetEnvironmentVariable("TOKEN") == null)
-            {
-                runLocal();
-            }
-            else
-            {
-                runVPS();
+                var host = builder.Build();
+                using (host)
+                {
+                    await host.RunAsync();
+                }
             }
         }
     }
