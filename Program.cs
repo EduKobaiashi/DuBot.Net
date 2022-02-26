@@ -20,7 +20,7 @@ namespace DuBot
         public static Dictionary<string, Jogo> jogos = new Dictionary<string, Jogo>();
         public static MongoClient client = new MongoClient(MongoClientSettings.FromConnectionString("mongodb+srv://dubot_db:jeONYV9MXgyltJ8k@cluster-dubot.xrwe4.mongodb.net/Cluster-DuBot?retryWrites=true&w=majority"));
 
-        static async Task Main()
+        private static async void runLocal()
         {
             var builder = new HostBuilder()
                 .ConfigureAppConfiguration(x =>
@@ -64,6 +64,64 @@ namespace DuBot
             using (host)
             {
                 await host.RunAsync();
+            }
+        }
+
+        private static async void runVPS()
+        {
+            var builder = new HostBuilder()
+                .ConfigureAppConfiguration(x =>
+                {
+                    var configuration = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .Build();
+
+                    x.AddConfiguration(configuration);
+                })
+                .ConfigureLogging(x =>
+                {
+                    x.AddConsole();
+                    x.SetMinimumLevel(LogLevel.Debug);
+                })
+                .ConfigureDiscordHost((context, config) =>
+                {
+                    config.SocketConfig = new DiscordSocketConfig
+                    {
+                        LogLevel = LogSeverity.Debug,
+                        AlwaysDownloadUsers = false,
+                        MessageCacheSize = 200,
+                    };
+                    config.Token = Environment.GetEnvironmentVariable("TOKEN") ?? "";
+                })
+                .UseCommandService((context, config) =>
+                {
+                    config.CaseSensitiveCommands = false;
+                    config.LogLevel = LogSeverity.Debug;
+                    config.DefaultRunMode = RunMode.Async;
+                })
+                .ConfigureServices((context, services) =>
+                {
+                    services
+                        .AddHostedService<CommandHandler>();
+                })
+                .UseConsoleLifetime();
+
+            var host = builder.Build();
+            using (host)
+            {
+                await host.RunAsync();
+            }
+        }
+
+        static void Main()
+        {
+            if (Environment.GetEnvironmentVariable("TOKEN") == null)
+            {
+                runLocal();
+            }
+            else
+            {
+                runVPS();
             }
         }
     }
