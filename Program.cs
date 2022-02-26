@@ -45,8 +45,7 @@ namespace DuBot
                         AlwaysDownloadUsers = false,
                         MessageCacheSize = 200,
                     };
-
-                    config.Token = context.Configuration["Token"];
+                    config.Token = Environment.GetEnvironmentVariable("TOKEN") ?? context.Configuration["Token"];
                 })
                 .UseCommandService((context, config) =>
                 {

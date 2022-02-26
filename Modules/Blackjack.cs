@@ -211,6 +211,7 @@ namespace DuBot.Modules
             else if (userExiste[0].ultimoDaily != thisDay.ToString("d"))
             {
                 Program.client.GetDatabase(Context.Guild.Id.ToString()).GetCollection<Usuario>("blackjack").UpdateOne(Builders<Usuario>.Filter.Eq("_id", Context.User.Id), Builders<Usuario>.Update.Inc(x => x.pontos, 100));
+                Program.client.GetDatabase(Context.Guild.Id.ToString()).GetCollection<Usuario>("blackjack").UpdateOne(Builders<Usuario>.Filter.Eq("_id", Context.User.Id), Builders<Usuario>.Update.Set(x => x.ultimoDaily, thisDay.ToString("d")));
                 await ReplyAsync("100 pontos diários adicionados");
             }
             else if (userExiste[0].ultimoDaily == thisDay.ToString("d"))

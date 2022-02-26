@@ -14,7 +14,7 @@ namespace DuBot.Modules
         [Command("velha")]
         public async Task JogoDaVelhaAsync(IUser user)
         {
-            await ReplyAsync("Teste");
+            await ReplyAsync("Teste1");
             //await ReplyAsync(IPAddress.Parse(new WebClient().DownloadString("http://icanhazip.com").Replace("\\r\\n", "").Replace("\\n", "").Trim()).ToString());
             //var componentBuilder = new ComponentBuilder()
             //    .WithButton("", "0", ButtonStyle.Success, new Emoji("\u2705"))

@@ -42,7 +42,7 @@ namespace DuBot.Services
             if (message.Source != MessageSource.User ) return;
 
             int argPos = 0;
-            if (!message.HasStringPrefix(this.configuration["Prefix"], ref argPos) && !message.HasMentionPrefix(Client.CurrentUser, ref argPos)) return;
+            if (!message.HasStringPrefix(Environment.GetEnvironmentVariable("TOKEN") ?? this.configuration["Token"], ref argPos) && !message.HasMentionPrefix(Client.CurrentUser, ref argPos)) return;
 
             var context = new SocketCommandContext(Client, message);
             await this.service.ExecuteAsync(context, argPos, this.provider);
